@@ -63,6 +63,9 @@ CURRENT SETTINGS
   previously tested placement. Action/button hints follow the input device.
 
 TESTED CONFIGURATION
+
+Headset compatibility: So far, this mod has only been tested with the Bigscreen Beyond 2e. Meta Quest 3 and other headsets that are not native SteamVR headsets have not been tested; whether the mod works with them is unknown.
+
 The Coin Game 1.0.11 (Unity 2022.3.62f3, Mono, x64), Windows 10,
 Bigscreen Beyond 2e, SteamVR/OpenXR, Xbox-compatible gamepad.
 The component files match the working installed configuration. This ZIP's

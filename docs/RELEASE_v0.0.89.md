@@ -26,6 +26,8 @@ Tested with The Coin Game 1.0.11, Windows 10, Bigscreen Beyond 2e, SteamVR/OpenX
 and an Xbox-compatible controller. The ZIP was tested by reinstalling after a
 normal-game startup check. Compatibility with every other setup is not guaranteed.
 
+**Headset compatibility: So far, this mod has only been tested with the Bigscreen Beyond 2e. Meta Quest 3 and other headsets that are not native SteamVR headsets have not been tested; whether the mod works with them is unknown.**
+
 Download the mod ZIP below, **not** GitHub's automatically generated source archives.
 Checksum file is provided alongside it.
 

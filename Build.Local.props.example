@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <TheCoinGameDir>C:\Games\Steam\steamapps\common\TheCoinGame</TheCoinGameDir>
+    <OpenXRSdkDir>C:\SDKs\OpenXR-SDK</OpenXRSdkDir>
+    <OpenXRLoaderLibDir>C:\SDKs\OpenXR-SDK\build\src\loader\Release</OpenXRLoaderLibDir>
+    <UnityPluginApiDir>C:\Unity\2022.3.62f3\Editor\Data\PluginAPI</UnityPluginApiDir>
+  </PropertyGroup>
+</Project>

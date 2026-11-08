@@ -1,0 +1,11 @@
+name: Feature request
+description: Suggest an improvement to the VR mod.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to improve?
+      description: Describe the problem, desired behavior, and any alternatives.
+    validations:
+      required: true

@@ -57,6 +57,9 @@ F11/F12 intentionally produce verbose diagnostics and may cause a brief hitch.
 
 ## Requirements and compatibility
 
+**Headset compatibility: So far, this mod has only been tested with the Bigscreen Beyond 2e. Meta Quest 3 and other headsets that are not native SteamVR headsets have not been tested; whether the mod works with them is unknown.**
+
+
 - The Coin Game for Windows, x64.
 - Windows 10/11 x64, headset software, and a configured OpenXR runtime.
 - [Microsoft Visual C++ v14 Redistributable X64](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist/).

@@ -9,12 +9,22 @@ interaction, physical object grabbing, and VR-friendly menus.
 > Motion-controller support may be explored in the future; there is no committed
 > release date. Headset tracking is supported independently of hand controllers.
 
-**[Download v0.0.89](https://github.com/Hoshi82/TheCoinGameVR/releases/tag/v0.0.89)** ·
+**[Download v0.0.90](https://github.com/Hoshi82/TheCoinGameVR/releases/tag/v0.0.90)** ·
 **[Installation](docs/INSTALLATION.md)** · **[Report a problem](https://github.com/Hoshi82/TheCoinGameVR/issues/new/choose)**
+
+## New in v0.0.90
+
+- Golf cart driving now carries the VR player position correctly.
+- Room-scale movement works before entering and after leaving the cart.
+- Physical movement direction follows the VR camera base orientation.
+
+The package contains the exact tested **0.0.89 vehicle-test D** DLL. Its internal
+version remains unchanged to preserve the tested binary; see the
+[release notes](docs/RELEASE_v0.0.90.md#build-identification).
 
 ## Download and install
 
-Download `TheCoinGameVR-v0.0.89-Windows-x64.zip` from
+Download `TheCoinGameVR-v0.0.90-Windows-x64.zip` from
 [Releases](https://github.com/Hoshi82/TheCoinGameVR/releases). **Do not use GitHub's “Source code” ZIP to install the mod.**
 
 1. Install the **Microsoft Visual C++ v14 Redistributable — X64** from
@@ -69,8 +79,11 @@ Tested with **The Coin Game 1.0.11**, Unity 2022.3.62f3 Mono, Windows 10,
 The tested runtime recommended **3560 × 3560 per eye**; this is queried dynamically,
 not hardcoded or equated with the physical panel resolution.
 
-The packaged files were tested by removing the mod/loader from the game,
-confirming the normal game started, and reinstalling from the release ZIP.
+The earlier v0.0.89 package was tested by removing the mod/loader, checking normal
+game startup, and reinstalling. The v0.0.90 vehicle-fix DLL was tested in the
+installed game; its hash matches the successful test log and a fresh Release
+rebuild. The new ZIP has passed packaging checks but has not had a separate
+headset reinstall test.
 Other game versions, headsets, and a fresh second PC have not been verified.
 
 ## Possible future development

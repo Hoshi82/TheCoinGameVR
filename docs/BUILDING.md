@@ -37,9 +37,14 @@ Outputs:
 - `x64/Release/TCGVR_OpenXR.dll`
 
 Builds do not automatically install into the game. Back up the installed files
-before testing. The v0.0.89 release uses the validated existing native binary,
+before testing. The v0.0.90 release uses the validated existing native binary,
 not a newly rebuilt native DLL; a local rebuild is not guaranteed byte-identical.
-The managed code corresponds to the tested menu-test F configuration.
+The managed code corresponds to the successfully tested 0.0.89 vehicle-test D
+configuration. v0.0.90 is the public package version; the DLL keeps its tested
+0.0.89 internal marker. A Release rebuild of the development project matched
+the installed DLL and successful test log hash byte-for-byte. Compiler versions,
+source paths, PDB settings, and dependency versions can affect reproducibility
+when building the portable publication copy on another machine.
 
 Check head tracking, stereo/world stability, recentering, controller/mouse aim,
 grabbing, UI hints, menus, and scene transitions in the headset after changes.

@@ -224,6 +224,7 @@ namespace TheCoinGameVR
 
         private bool trackingEnabled = true;
         private bool bodyFollowEnabled = true;
+        private string lastBodyFollowMode = "";
         private bool hideOwnHead = true;
 
         private bool stereoWanted;
@@ -955,6 +956,7 @@ namespace TheCoinGameVR
             MelonLogger.Msg("Version 0.0.89 separate VR player HUD test (0.0.45 codebase)");
             MelonLogger.Msg("0.0.89 pose-test A: consistent FSM game yaw; detailed cursor dumps only after F11.");
             MelonLogger.Msg("0.0.89 menu-test F: head-following 16:9 menus at 2m; live action hints retained.");
+            MelonLogger.Msg("0.0.89 vehicle-test D: room-scale transfer uses the same base orientation as the rendered head pose.");
             MelonLogger.Msg("ONE-BUTTON VR + ROBUST HEAD AIM + YAW TURN + HANDS-ONLY BODY + MATCHED RENDER POSE");
             MelonLogger.Msg("====================================");
 
@@ -1075,7 +1077,8 @@ namespace TheCoinGameVR
             {
                 objectSearchTimer = 0.0f;
 
-                if (playerCamera == null || playerRoot == null || playerRigidbody == null)
+                if (playerCamera == null || !playerCamera.isActiveAndEnabled ||
+                    playerRoot == null || playerRigidbody == null)
                 {
                     FindPlayerObjects();
                 }
@@ -1103,6 +1106,7 @@ namespace TheCoinGameVR
                 DumpVisibleCenterUi();
                 DumpVrAimComparison();
                 DumpUiVisibility();
+                DumpVehicleCameraState();
             }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.F12))
@@ -1320,8 +1324,8 @@ namespace TheCoinGameVR
                 Quaternion.Inverse(referenceHeadRotation) *
                 (currentHeadPosition - referenceHeadPosition);
 
-            if (bodyFollowEnabled && playerRoot != null && playerRigidbody != null)
-                ApplyImmediateBodyFollow(ref relativePosition);
+            if (bodyFollowEnabled && CanApplyOnFootBodyFollow())
+                ApplyImmediateBodyFollow(ref relativePosition, baseRotation);
 
             Vector3 finalPosition = basePosition + relativePosition;
             Quaternion finalRotation = baseRotation * relativeRotation;
@@ -6390,7 +6394,7 @@ namespace TheCoinGameVR
         // Body Follow
         // ====================================================
 
-        private void ApplyImmediateBodyFollow(ref Vector3 relativePosition)
+        private void ApplyImmediateBodyFollow(ref Vector3 relativePosition, Quaternion cameraBaseRotation)
         {
             Vector3 localMove = new Vector3(relativePosition.x, 0.0f, relativePosition.z);
 
@@ -6401,14 +6405,84 @@ namespace TheCoinGameVR
                 return;
             }
 
-            Vector3 worldMove = playerRoot.TransformDirection(localMove);
+            // relativePosition is in recentered tracking coordinates. The
+            // rendered head uses parent * baseRotation * relativeRotation;
+            // translation must use that same base, not just PLAYER's axes.
+            Vector3 parentLocalMove = cameraBaseRotation * localMove;
+            Transform cameraParent = playerCamera.transform.parent;
+            Vector3 worldMove = cameraParent != null
+                ? cameraParent.TransformDirection(parentLocalMove)
+                : parentLocalMove;
             worldMove.y = 0.0f;
 
-            playerRigidbody.MovePosition(playerRigidbody.position + worldMove);
+            // LateUpdate renders immediately: MovePosition only schedules the
+            // next physics step, so consuming the HMD offset here can erase
+            // visible room-scale movement. Transfer the walking body now, and
+            // synchronize its transform even when interpolation is enabled.
+            // The seated/vehicle guard must run before entering this method.
+            Vector3 targetPosition = playerRoot.position + worldMove;
+            playerRigidbody.position = targetPosition;
+            playerRoot.position = targetPosition;
             referenceHeadPosition += referenceHeadRotation * localMove;
 
             relativePosition.x = 0.0f;
             relativePosition.z = 0.0f;
+        }
+
+        private bool CanApplyOnFootBodyFollow()
+        {
+            string mode = "on-foot";
+            Behaviour controller = firstPersonController as Behaviour;
+            if (useMenuCamera || playerRoot == null || playerRigidbody == null)
+                mode = "no-on-foot-body";
+            else if (!playerRigidbody.gameObject.activeInHierarchy || playerRigidbody.isKinematic)
+                mode = "body-controlled-by-game";
+            else if (controller != null && !controller.isActiveAndEnabled)
+                mode = "on-foot-controller-disabled";
+            else if (playerCamera != null)
+            {
+                Rigidbody cameraBody = playerCamera.GetComponentInParent<Rigidbody>();
+                Rigidbody parentBody = playerRoot.parent != null
+                    ? playerRoot.parent.GetComponentInParent<Rigidbody>() : null;
+                if ((cameraBody != null && cameraBody != playerRigidbody &&
+                     !cameraBody.transform.IsChildOf(playerRoot)) ||
+                    (parentBody != null && parentBody != playerRigidbody))
+                    mode = "attached-to-transport";
+            }
+
+            if (mode != lastBodyFollowMode)
+            {
+                lastBodyFollowMode = mode;
+                MelonLogger.Msg("VR_BODY_FOLLOW: " + mode);
+                DumpVehicleCameraState();
+            }
+
+            // When seated, head translation stays on the camera. Never issue
+            // a MovePosition that fights the game's vehicle/seat attachment.
+            return mode == "on-foot";
+        }
+
+        private void DumpVehicleCameraState()
+        {
+            Behaviour controller = firstPersonController as Behaviour;
+            MelonLogger.Msg("VR_VEHICLE_STATE: source=" +
+                (playerCamera != null ? GetTransformPath(playerCamera.transform) : "<none>") +
+                " sourceEnabled=" + (playerCamera != null && playerCamera.isActiveAndEnabled) +
+                " player=" + GetTransformPath(playerRoot) +
+                " parent=" + GetTransformPath(playerRoot != null ? playerRoot.parent : null) +
+                " kinematic=" + (playerRigidbody != null && playerRigidbody.isKinematic) +
+                " footController=" + (controller != null ? controller.isActiveAndEnabled.ToString() : "<none>") +
+                " playerEuler=" + (playerRoot != null ? FormatVector3(playerRoot.eulerAngles) : "<none>") +
+                " cameraParentEuler=" + (playerCamera != null && playerCamera.transform.parent != null
+                    ? FormatVector3(playerCamera.transform.parent.eulerAngles) : "<none>") +
+                " gameLocalYaw=" + GetGameYawRotation().eulerAngles.y.ToString("F3"));
+            foreach (Camera camera in UnityEngine.Object.FindObjectsOfType<Camera>(true))
+            {
+                if (camera != null && camera.isActiveAndEnabled &&
+                    !camera.name.StartsWith("TCGVR", StringComparison.Ordinal))
+                    MelonLogger.Msg("VR_ACTIVE_CAMERA: " + GetTransformPath(camera.transform) +
+                        " targetTexture=" + (camera.targetTexture != null));
+            }
         }
 
         private void RestoreBasePose(Vector3 position, Quaternion rotation)

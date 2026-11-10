@@ -1,10 +1,13 @@
 # Installation and troubleshooting
 
 ```text
-THE COIN GAME VR — 0.0.89
-Windows x64 extract-to-game-folder package | November 8, 2026
+THE COIN GAME VR — v0.0.90 (public package version)
+Windows x64 extract-to-game-folder package | November 10, 2026
 Author: Hoshi82
-Included mod revision: menu-test F (user-tested working configuration)
+Included mod revision: 0.0.89 vehicle-test D (exact user-tested DLL)
+MelonLoader still reports 0.0.89; this is intentional, not the old public build.
+This package fixes golf cart tracking, room-scale movement before/after exit,
+and movement direction relative to the VR camera base orientation.
 
 INPUT SUPPORT
 Gamepad or mouse/keyboard only. 6DoF motion-controller hand tracking and
@@ -68,9 +71,12 @@ Headset compatibility: So far, this mod has only been tested with the Bigscreen 
 
 The Coin Game 1.0.11 (Unity 2022.3.62f3, Mono, x64), Windows 10,
 Bigscreen Beyond 2e, SteamVR/OpenXR, Xbox-compatible gamepad.
-The component files match the working installed configuration. This ZIP's
-structure and checksums were verified, but a fresh installation on a clean
-second computer has not been tested. Other headsets/game versions may differ.
+The successful vehicle-test D session covered golf cart driving and room-scale
+movement/direction before entry and after exit. The mod DLL matches both the
+successful test log hash and a fresh Release rebuild byte-for-byte. ZIP paths,
+CRCs, and hashes were verified. The repackaged ZIP has not had a separate
+headset reinstall test; a fresh second computer and other game versions remain
+unverified. This is not a claim of universal vehicle or collision correctness.
 
 TROUBLESHOOTING
 - Missing MSVCP140.dll / VCRUNTIME140.dll / VCRUNTIME140_1.dll, or a native

@@ -20,7 +20,7 @@ interaction, physical object grabbing, and VR-friendly menus.
 
 The package contains the exact tested **0.0.89 vehicle-test D** DLL. Its internal
 version remains unchanged to preserve the tested binary; see the
-[release notes](docs/RELEASE_v0.0.90.md#build-identification).
+[build documentation](docs/BUILDING.md).
 
 ## Download and install
 

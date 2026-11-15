@@ -1,6 +1,8 @@
 # The Coin Game VR
 
 A community PC VR mod for **The Coin Game**, by **Hoshi82**.
+
+Developed with support from Codex.
 Play with head tracking, stereo rendering, mouse/gamepad controls, head-directed
 interaction, physical object grabbing, and VR-friendly menus.
 
